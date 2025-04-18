@@ -69,14 +69,20 @@ const getCharacterByName = async (name) => {
 };
 
 const navByPageCharacter = async (page) => {
+
+    currentPage = page;
     try {
         const data = await apiCall({
             url: `${BASE_URL}character/?page=${page}`,
             method: "GET",
         });
         console.log("data by page", data);
-        addCaptation(data?.results?.[0]?.name);
-        createElementHtml(data?.results?.[0]);
+        totalPages = data?.infos?.pages;
+
+            data?.results?.forEach(character => {
+            addCaptation(character?.name);
+            createElementHtml(character);
+        });
 
     } catch (error) {
         console.error("Error in call API GET by ID :", error);
@@ -87,7 +93,31 @@ const navByPageCharacter = async (page) => {
 //
 // getCharacterByName('Morty Smith').then(res =>res);
 
-navByPageCharacter(3).then(res =>res);
+navByPageCharacter(4).then(res =>res);
+
+const navPage = ()=>{
+
+    const btnPrev = document.getElementById('prev-btn');
+    const btnNext = document.getElementById('next-btn');
+
+    //si button prev and > 1
+
+
+    //si button next and < totalPages
+
+
+
+    let prev = 2;
+
+    try {
+        const data = navByPageCharacter(prev);
+        console.log("data nav/prev page", data);
+
+    } catch (error) {
+        console.error("Error in call API GET by ID :", error);
+    }
+
+}
 
 const createElementHtml = (element) =>{
     for (const el in element ){
