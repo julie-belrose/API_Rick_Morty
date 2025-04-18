@@ -41,7 +41,7 @@ const createElementHtml = (element) =>{
     for (const el in element ){
         // console.log(el);
          addThead(el);
-         addTbody(el)
+         addTbody(`${el}`,  element[el]);
     }
 };
 
@@ -64,13 +64,21 @@ const addThead =(element)=>{
     content.appendChild(thead);
 };
 
-const addTbody = (element) =>{
+const addTbody = (key, value) =>{
     // tbody
     const tbody = document.createElement("tbody");
     const bodyRow = document.createElement("tr");
     const td = document.createElement("td");
 
-    (element === "origin" || element === "location" || element === 'episode' ) ? td.textContent = element[element].name : td.textContent = element[element];
+    if (Array.isArray(value) && key === "episode") {
+        td.textContent = value[0];
+    }
+    else if (typeof value === "object" && value !== null) {
+        td.textContent = value.name || JSON.stringify(value);
+    }
+    else {
+        td.textContent = value;
+    }
     bodyRow.appendChild(td);
 
     tbody.appendChild(bodyRow);
