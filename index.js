@@ -1,5 +1,4 @@
 // * Permettre de chercher un personnage via son **nom**
-//  * Permettre de chercher un personnage via son **identifiant**
 //  * Permettre de visualiser les **informations principales** du personnage (son **nom**, son **espèce**, son **genre**, son **statut**, son **origine**, sa **dernière localisation connue**, et l'**image** du personnage)
 // * Il devra être possible de passer directement au personnage **suivant ou précédent** dans la base de données (aller du #27 au #28 par exemple). Cette fonctionnalité devra vérifier si l'on est déjà au **premier ou au dernier personnage** afin d’éviter les erreurs
 
@@ -34,34 +33,54 @@ const apiCall = async ({ url, method ="GET", body =null, headers = {}})=> {
     }
 };
 
+// * Search for a character using its **identifier**.
 const getCharacterById = async (id) => {
     try {
         const data = await apiCall({
             url: `${BASE_URL}character/${id}`,
             method: "GET",
         });
-        console.log("data:", data);
+        addCaptation(data && data.name);
         createElementHtml(data);
     } catch (error) {
         console.error("Error in call API GET by ID :", error);
     }
 };
 
-getCharacterById(2).then(r =>r );
+const getCharacterByName = async (name) => {
+    try {
+        const data = await apiCall({
+            url: `${BASE_URL}character/?name=${name}`,
+            method: "GET",
+        });
+        console.log("data by name", data);
 
-const createElementHtml = (element) =>{
-    addCaptation(element);
-
-    for (const el in element ){
-         addThead(el);
-         addTbody(`${el}`,  element[el]);
+        addCaptation(data?.results?.[0]?.name);
+        createElementHtml(data?.results?.[0]);
+        //todo table for all ricky
+    } catch (error) {
+        console.error("Error in call API GET by ID :", error);
     }
 };
 
-const addCaptation =(element)=>{
+getCharacterById(2).then(res =>res);
+
+getCharacterByName('Rick Sanchez').then(res =>res);
+
+const createElementHtml = (element) =>{
+    for (const el in element ){
+        if (el !== 'info' && el !== 'results') {
+             // console.log(el);
+             addThead(el);
+             addTbody(`${el}`,  element[el]);
+         }
+    }
+};
+
+const addCaptation =(name)=>{
     // Caption
     const caption = document.createElement("caption");
-    caption.textContent = `Infos of ${element.name}`;
+    caption.textContent = `Infos of ${name}`;
     content.appendChild(caption);
 };
 
