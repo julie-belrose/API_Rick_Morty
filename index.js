@@ -7,30 +7,44 @@ const BASE_URL = "https://rickandmortyapi.com/api/";
 const content = document.getElementById("content")
 
 
-const getCharacterById = async (id) => {
-    console.log(`url : ${BASE_URL}character/${id}`);
-    await fetch(`${BASE_URL}character/${id}`, {
-        headers:{
-            "Content-type":"application/json"
+const apiCall = async ({ url, method ="GET", body =null, headers = {}})=> {
+    const options = {
+        method,
+        headers: {
+            "Content-Type": "application/json",
+            ...headers,
         },
-        method: "GET",
-    }).then(res => {
-        if (!res.ok) {
-            throw new Error(`Erreur : ${res.status}`);
-        }
-        const tab = Object.entries(res);
-        console.log(`response : ${res}`);
-        console.log(`response tab : ${tab}`);
-        return res.json();
-    })
-        .then(data => {
-            console.log("data:", data);
-            createElementHtml(data);
-        })
-        .catch(error => {
-            console.error("Erreur lors de l'appel API :", error);
-        });
+    };
 
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+
+    try {
+        const res = await fetch(url, options);
+
+        if (!res.ok) {
+            throw new Error(`HTTP error: ${res.status}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error in apiCall :", err);
+        throw err;
+    }
+};
+
+const getCharacterById = async (id) => {
+    try {
+        const data = await apiCall({
+            url: `${BASE_URL}character/${id}`,
+            method: "GET",
+        });
+        console.log("data:", data);
+        createElementHtml(data);
+    } catch (error) {
+        console.error("Error in call API GET by ID :", error);
+    }
 };
 
 getCharacterById(2).then(r =>r );
@@ -39,7 +53,6 @@ const createElementHtml = (element) =>{
     addCaptation(element);
 
     for (const el in element ){
-        // console.log(el);
          addThead(el);
          addTbody(`${el}`,  element[el]);
     }
