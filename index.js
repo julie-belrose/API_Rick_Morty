@@ -3,7 +3,11 @@
 // * Il devra être possible de passer directement au personnage **suivant ou précédent** dans la base de données (aller du #27 au #28 par exemple). Cette fonctionnalité devra vérifier si l'on est déjà au **premier ou au dernier personnage** afin d’éviter les erreurs
 
 const BASE_URL = "https://rickandmortyapi.com/api/";
-const content = document.getElementById("content")
+const content = document.getElementById("content");
+
+let currentPage = 1; // par défaut
+let totalPages = null;
+
 
 
 const apiCall = async ({ url, method ="GET", body =null, headers = {}})=> {
@@ -40,6 +44,7 @@ const getCharacterById = async (id) => {
             url: `${BASE_URL}character/${id}`,
             method: "GET",
         });
+        console.log("data by id", data);
         addCaptation(data && data.name);
         createElementHtml(data);
     } catch (error) {
@@ -69,8 +74,7 @@ const navByPageCharacter = async (page) => {
             url: `${BASE_URL}character/?page=${page}`,
             method: "GET",
         });
-        console.log("data by name", data);
-
+        console.log("data by page", data);
         addCaptation(data?.results?.[0]?.name);
         createElementHtml(data?.results?.[0]);
 
@@ -81,14 +85,13 @@ const navByPageCharacter = async (page) => {
 
 // getCharacterById(2).then(res =>res);
 //
-// getCharacterByName('Rick Sanchez').then(res =>res);
+// getCharacterByName('Morty Smith').then(res =>res);
 
 navByPageCharacter(3).then(res =>res);
 
 const createElementHtml = (element) =>{
     for (const el in element ){
         if (el !== 'info' && el !== 'results' && el !== 'image') {
-             // console.log(el);
              addThead(el);
              addTbody(`${el}`,  element[el]);
          }
