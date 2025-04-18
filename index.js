@@ -69,12 +69,13 @@ getCharacterByName('Rick Sanchez').then(res =>res);
 
 const createElementHtml = (element) =>{
     for (const el in element ){
-        if (el !== 'info' && el !== 'results') {
+        if (el !== 'info' && el !== 'results' && el !== 'image') {
              // console.log(el);
              addThead(el);
              addTbody(`${el}`,  element[el]);
          }
     }
+    addImg(element, element?.image);
 };
 
 const addCaptation =(name)=>{
@@ -115,4 +116,13 @@ const addTbody = (key, value) =>{
 
     tbody.appendChild(bodyRow);
     content.appendChild(tbody);
+}
+
+const addImg =(element, imgUrl)=> {
+    const container = document.getElementById('container_img');
+
+    const img = document.createElement("img");
+    img.src = imgUrl;
+    img.alt = element.name;
+    container.appendChild(img);
 }
