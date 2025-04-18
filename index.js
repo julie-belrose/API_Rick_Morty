@@ -35,30 +35,13 @@ const getCharacterById = async (id) => {
 
 getCharacterById(2).then(r =>r );
 
-
 const createElementHtml = (element) =>{
-    // 3. Extraire dynamiquement les clés (ex: Object.keys()) depuis un des objets pour construire les <th>
-    // 4. Boucler sur "characters" (le tableau) pour créer les <tr> + <td>
-    // 5. Ajouter la table dans le DOM (par ex. dans un <div id="result">)
-
     addCaptation(element);
 
-
     for (const el in element ){
-        console.log(el);
-        //thead
-        const thead = document.createElement("thead");
-        const headRow = document.createElement("tr");
-
-
-        //const headers = ["id", "name", "status", "species", "gender", "origin", "location"];
-       // el.forEach(key => {
-            const th = document.createElement("th");
-            th.textContent = `${el}`;
-            headRow.appendChild(th);
-       // });
-        thead.appendChild(headRow);
-        content.appendChild(thead);
+        // console.log(el);
+         addThead(el);
+         addTbody(el)
     }
 };
 
@@ -68,3 +51,28 @@ const addCaptation =(element)=>{
     caption.textContent = `Infos of ${element.name}`;
     content.appendChild(caption);
 };
+
+const addThead =(element)=>{
+    //thead
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+
+    const th = document.createElement("th");
+    th.textContent = `${element}`;
+    headRow.appendChild(th);
+    thead.appendChild(headRow);
+    content.appendChild(thead);
+};
+
+const addTbody = (element) =>{
+    // tbody
+    const tbody = document.createElement("tbody");
+    const bodyRow = document.createElement("tr");
+    const td = document.createElement("td");
+
+    (element === "origin" || element === "location" || element === 'episode' ) ? td.textContent = element[element].name : td.textContent = element[element];
+    bodyRow.appendChild(td);
+
+    tbody.appendChild(bodyRow);
+    content.appendChild(tbody);
+}
