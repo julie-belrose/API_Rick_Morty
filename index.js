@@ -63,9 +63,27 @@ const getCharacterByName = async (name) => {
     }
 };
 
-getCharacterById(2).then(res =>res);
+const navByPageCharacter = async (page) => {
+    try {
+        const data = await apiCall({
+            url: `${BASE_URL}character/?page=${page}`,
+            method: "GET",
+        });
+        console.log("data by name", data);
 
-getCharacterByName('Rick Sanchez').then(res =>res);
+        addCaptation(data?.results?.[0]?.name);
+        createElementHtml(data?.results?.[0]);
+
+    } catch (error) {
+        console.error("Error in call API GET by ID :", error);
+    }
+};
+
+// getCharacterById(2).then(res =>res);
+//
+// getCharacterByName('Rick Sanchez').then(res =>res);
+
+navByPageCharacter(3).then(res =>res);
 
 const createElementHtml = (element) =>{
     for (const el in element ){
@@ -126,3 +144,5 @@ const addImg =(element, imgUrl)=> {
     img.alt = element.name;
     container.appendChild(img);
 }
+
+
